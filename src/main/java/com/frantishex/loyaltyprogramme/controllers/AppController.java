@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.frantishex.loyaltyprogramme.DTOs.CustomerOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerPassingDTO;
+import com.frantishex.loyaltyprogramme.DTOs.MerchantDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SaleOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SalePassingDTO;
 import com.frantishex.loyaltyprogramme.models.Customer;
@@ -35,10 +36,18 @@ public class AppController {
 
 	@PostMapping(value = "/addmerchant")
 	@ResponseBody
-	public ResponseEntity<String> addMerchant(@Valid @RequestBody Merchant merchant) {
-		serviceFacade.createMerchant(merchant);
-		return new ResponseEntity<String>("Merchant created!", HttpStatus.OK);
-	}
+	public ResponseEntity<String> addMerchant(@Valid @RequestBody MerchantDTO newMerchant) {
+	
+		try {
+
+			Merchant merchant = serviceFacade.convertToEntity(newMerchant);
+			serviceFacade.createMerchant(merchant);
+		} catch (Exception e) {
+
+			e.getMessage();
+		}
+
+		return new ResponseEntity<String>("Customer created!", HttpStatus.OK);	}
 
 	@GetMapping(value = "/getmerchantbyname")
 	@ResponseBody

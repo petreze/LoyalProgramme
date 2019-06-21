@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.frantishex.loyaltyprogramme.DTOs.CustomerOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerPassingDTO;
+import com.frantishex.loyaltyprogramme.DTOs.MerchantDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SaleOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SalePassingDTO;
 import com.frantishex.loyaltyprogramme.models.Customer;
@@ -130,5 +131,10 @@ public class ServiceFacade {
 		SaleOutDTO saleDAO = modelMapper.map(sale, SaleOutDTO.class);
 		saleDAO.setCustomerName(sale.getCustomer().getName());
 		return saleDAO;
+	}
+	
+	public Merchant convertToEntity(MerchantDTO merchantCommand) {
+		Merchant merchant = modelMapper.map(merchantCommand, Merchant.class);
+		return merchant;
 	}
 }
