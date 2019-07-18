@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.frantishex.loyaltyprogramme" })
 @EntityScan("com.frantishex.loyaltyprogramme.models")
-public class Application {
+public class App {
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(App.class, args);
 	}
 }

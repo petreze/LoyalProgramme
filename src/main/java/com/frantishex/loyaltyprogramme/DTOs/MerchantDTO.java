@@ -5,10 +5,9 @@ import java.math.BigDecimal;
 public class MerchantDTO {
 
 	private String name;
-	
+
 	private BigDecimal discount;
 
-	
 	public String getName() {
 		return name;
 	}

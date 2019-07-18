@@ -37,7 +37,7 @@ public class AppController {
 	@PostMapping(value = "/addmerchant")
 	@ResponseBody
 	public ResponseEntity<String> addMerchant(@Valid @RequestBody MerchantDTO newMerchant) {
-	
+
 		try {
 
 			Merchant merchant = serviceFacade.convertToEntity(newMerchant);
@@ -47,7 +47,8 @@ public class AppController {
 			e.getMessage();
 		}
 
-		return new ResponseEntity<String>("Customer created!", HttpStatus.OK);	}
+		return new ResponseEntity<String>("Customer created!", HttpStatus.OK);
+	}
 
 	@GetMapping(value = "/getmerchantbyname")
 	@ResponseBody

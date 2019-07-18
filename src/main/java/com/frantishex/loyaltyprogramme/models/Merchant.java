@@ -19,7 +19,6 @@ public class Merchant extends BaseObject {
 	@Column(nullable = false)
 	private BigDecimal discount;
 
-
 	public String getName() {
 		return name;
 	}

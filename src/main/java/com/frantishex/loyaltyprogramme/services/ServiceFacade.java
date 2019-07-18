@@ -31,6 +31,7 @@ public class ServiceFacade {
 	@Autowired
 	MerchantService merchantService;
 
+	@Autowired
 	ModelMapper modelMapper = new ModelMapper();
 
 	public void createCustomer(Customer customer) {
@@ -132,7 +133,7 @@ public class ServiceFacade {
 		saleDAO.setCustomerName(sale.getCustomer().getName());
 		return saleDAO;
 	}
-	
+
 	public Merchant convertToEntity(MerchantDTO merchantCommand) {
 		Merchant merchant = modelMapper.map(merchantCommand, Merchant.class);
 		return merchant;

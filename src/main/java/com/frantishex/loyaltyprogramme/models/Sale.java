@@ -40,7 +40,6 @@ public class Sale extends BaseObject {
 	@Column(nullable = false)
 	private LocalDateTime date = LocalDateTime.now();
 
-
 	public Customer getCustomer() {
 		return customer;
 	}
