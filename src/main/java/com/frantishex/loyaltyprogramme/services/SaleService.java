@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.frantishex.loyaltyprogramme.models.Customer;
 import com.frantishex.loyaltyprogramme.models.Sale;
 
 @Service
@@ -31,7 +32,7 @@ public class SaleService {
 		return em.createNamedQuery("allSales", Sale.class).setMaxResults(100).getResultList();
 	}
 
-	public List<Sale> getCheaperThan(BigDecimal price) {
+	public List<Sale> getSalesCheaperThan(BigDecimal price) {
 
 		return em.createNamedQuery("salesUnder", Sale.class).setParameter("price", price).setMaxResults(100)
 				.getResultList();
@@ -45,11 +46,21 @@ public class SaleService {
 
 	public BigDecimal settingDiscountedPrice(Sale sale) {
 
-		BigDecimal discount = sale.getDiscount();
+		BigDecimal discount = sale.getDiscountPercent();
 
 		BigDecimal discountedPrice = sale.getPrice()
 				.subtract(sale.getPrice().multiply(discount).divide(new BigDecimal(100)));
 
 		return discountedPrice;
+	}
+
+	public void recalculateClientPoints(Customer client, Sale sale) {
+
+		if (client == null) {
+			return;
+		}
+
+		client.setPoints(client.getPoints()
+				.add(sale.getDiscountedPrice().multiply(new BigDecimal(5).divide(new BigDecimal(100)))));
 	}
 }

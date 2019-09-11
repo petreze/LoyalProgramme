@@ -8,6 +8,8 @@ public class CustomerOutDTO {
 
 	private BigDecimal turnOver;
 
+	private BigDecimal points;
+
 	public String getName() {
 		return name;
 	}
@@ -22,5 +24,13 @@ public class CustomerOutDTO {
 
 	public void setTurnOver(BigDecimal turnOver) {
 		this.turnOver = turnOver;
+	}
+
+	public BigDecimal getPoints() {
+		return points;
+	}
+
+	public void setPoints(BigDecimal points) {
+		this.points = points;
 	}
 }

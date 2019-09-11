@@ -23,12 +23,15 @@ public class Customer extends BaseObject {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
 	private BigDecimal turnOver;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinColumn(name = "merchant_id", nullable = false)
 	private Merchant merchant;
+
+	@Column(name = "points", columnDefinition = "DECIMAL(18,2)")
+	private BigDecimal points = new BigDecimal(0);
 
 	public String getName() {
 		return name;
@@ -36,6 +39,14 @@ public class Customer extends BaseObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public BigDecimal getPoints() {
+		return points;
+	}
+
+	public void setPoints(BigDecimal points) {
+		this.points = points;
 	}
 
 	public BigDecimal getTurnOver() {

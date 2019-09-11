@@ -9,19 +9,25 @@ public class SaleOutDTO {
 
 	private String customerName;
 
-	private BigDecimal discount;
+	private BigDecimal discountPercent;
+
+	private BigDecimal discountAmount;
 
 	private BigDecimal discountedPrice;
+	
+	private BigDecimal givenPoints;
+
+	private BigDecimal usedPoints;
 
 	@JsonIgnore
 	private LocalDateTime date = LocalDateTime.now();
 
-	public BigDecimal getDiscount() {
-		return discount;
+	public BigDecimal getDiscountPercent() {
+		return discountPercent;
 	}
 
-	public void setDiscount(BigDecimal discount) {
-		this.discount = discount;
+	public void setDiscountPercent(BigDecimal discount) {
+		this.discountPercent = discount;
 	}
 
 	public BigDecimal getDiscountedPrice() {
@@ -46,5 +52,29 @@ public class SaleOutDTO {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public BigDecimal getGivenPoints() {
+		return givenPoints;
+	}
+
+	public void setGivenPoints(BigDecimal givenPoints) {
+		this.givenPoints = givenPoints;
+	}
+
+	public BigDecimal getUsedPoints() {
+		return usedPoints;
+	}
+
+	public void setUsedPoints(BigDecimal usedPoints) {
+		this.usedPoints = usedPoints;
 	}
 }

@@ -13,6 +13,8 @@ public class SalePassingDTO {
 
 	@Positive(message = "The price should be positive number")
 	private BigDecimal price;
+	
+	private BigDecimal usedPoints;
 
 	@JsonIgnore
 	private LocalDateTime date = LocalDateTime.now();
@@ -39,5 +41,13 @@ public class SalePassingDTO {
 
 	public void setDate(LocalDateTime date) {
 		this.date = date;
+	}
+
+	public BigDecimal getUsedPoints() {
+		return usedPoints;
+	}
+
+	public void setUsedPoints(BigDecimal usedPoints) {
+		this.usedPoints = usedPoints;
 	}
 }

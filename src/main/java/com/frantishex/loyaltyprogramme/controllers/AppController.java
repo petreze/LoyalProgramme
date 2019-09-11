@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerPassingDTO;
 import com.frantishex.loyaltyprogramme.DTOs.MerchantDTO;
+import com.frantishex.loyaltyprogramme.DTOs.MerchantReportDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SaleOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SalePassingDTO;
 import com.frantishex.loyaltyprogramme.models.Customer;
@@ -47,12 +48,12 @@ public class AppController {
 			e.getMessage();
 		}
 
-		return new ResponseEntity<String>("Customer created!", HttpStatus.OK);
+		return new ResponseEntity<String>("Merchant created!", HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/getmerchantbyname")
 	@ResponseBody
-	public ResponseEntity<Merchant> getMerchantByName(String name) {
+	public ResponseEntity<Merchant> getMerchantByName(String name) throws SQLException {
 		return new ResponseEntity<Merchant>(serviceFacade.getMerchantByName(name), HttpStatus.OK);
 	}
 
@@ -60,6 +61,14 @@ public class AppController {
 	@ResponseBody
 	public ResponseEntity<List<Merchant>> getAllMerchants() {
 		return new ResponseEntity<List<Merchant>>(serviceFacade.getAllMerchants(), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/merchantreport")
+	@ResponseBody
+	public ResponseEntity<MerchantReportDTO> merchantReport(String merchantName, String dateFrom, String dateTo)
+			throws SQLException, ClassNotFoundException {
+		return new ResponseEntity<MerchantReportDTO>(serviceFacade.merchantReport(merchantName, dateFrom, dateTo),
+				HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/addcustomer")
@@ -80,10 +89,10 @@ public class AppController {
 
 	@GetMapping(value = "/getcustomerbyname")
 	@ResponseBody
-	public ResponseEntity<CustomerOutDTO> getCustomerByName(String name) {
+	public ResponseEntity<CustomerOutDTO> getCustomerByName(String name) throws SQLException {
 
 		Customer customer = serviceFacade.getCustomerByName(name);
-		CustomerOutDTO customerDAO = serviceFacade.convertToDAO(customer);
+		CustomerOutDTO customerDAO = serviceFacade.convertToDTO(customer);
 
 		return new ResponseEntity<CustomerOutDTO>(customerDAO, HttpStatus.OK);
 	}
@@ -93,7 +102,7 @@ public class AppController {
 	public ResponseEntity<List<CustomerOutDTO>> getAllCustomers() {
 
 		List<Customer> customers = serviceFacade.getAllCustomers();
-		List<CustomerOutDTO> customersOUT = customers.stream().map(customer -> serviceFacade.convertToDAO(customer))
+		List<CustomerOutDTO> customersOUT = customers.stream().map(customer -> serviceFacade.convertToDTO(customer))
 				.collect(Collectors.toList());
 		;
 
@@ -102,10 +111,10 @@ public class AppController {
 
 	@GetMapping(value = "/getcustomersbymerchant")
 	@ResponseBody
-	public ResponseEntity<List<CustomerOutDTO>> getCustomersByMerchant(String name) {
+	public ResponseEntity<List<CustomerOutDTO>> getCustomersByMerchant(String name) throws SQLException {
 
 		List<Customer> customers = serviceFacade.getCustomersByMerchant(name);
-		List<CustomerOutDTO> customersOUT = customers.stream().map(customer -> serviceFacade.convertToDAO(customer))
+		List<CustomerOutDTO> customersOUT = customers.stream().map(customer -> serviceFacade.convertToDTO(customer))
 				.collect(Collectors.toList());
 
 		return new ResponseEntity<List<CustomerOutDTO>>(customersOUT, HttpStatus.OK);
@@ -122,6 +131,7 @@ public class AppController {
 			serviceFacade.createSale(sale);
 			serviceFacade.getCustomerByName(newSale.getCustomer()).stackTurnOver(sale.getDiscountedPrice());
 			serviceFacade.createCustomer(serviceFacade.getCustomerByName(newSale.getCustomer()));
+			serviceFacade.recalculateClientPoints(serviceFacade.getCustomerByName(newSale.getCustomer()), sale);
 		} catch (Exception e) {
 			e.getMessage();
 		}
@@ -134,7 +144,7 @@ public class AppController {
 	public ResponseEntity<List<SaleOutDTO>> getAllSales() {
 
 		List<Sale> sales = serviceFacade.getAllSales();
-		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDAO(sale))
+		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDTO(sale))
 				.collect(Collectors.toList());
 
 		return new ResponseEntity<List<SaleOutDTO>>(salesOUT, HttpStatus.OK);
@@ -142,10 +152,10 @@ public class AppController {
 
 	@GetMapping(value = "/getsalesunder")
 	@ResponseBody
-	public ResponseEntity<List<SaleOutDTO>> getSalesUnder(BigDecimal price) {
+	public ResponseEntity<List<SaleOutDTO>> getSalesUnder(BigDecimal price) throws SQLException {
 
 		List<Sale> sales = serviceFacade.getSalesCheaperThan(price);
-		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDAO(sale))
+		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDTO(sale))
 				.collect(Collectors.toList());
 
 		return new ResponseEntity<List<SaleOutDTO>>(salesOUT, HttpStatus.OK);
@@ -153,10 +163,10 @@ public class AppController {
 
 	@GetMapping(value = "/getsalesbycustomer")
 	@ResponseBody
-	public ResponseEntity<List<SaleOutDTO>> getSalesByCustomer(String name) {
+	public ResponseEntity<List<SaleOutDTO>> getSalesByCustomer(String name) throws SQLException {
 
 		List<Sale> sales = serviceFacade.getSalesByCustomer(name);
-		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDAO(sale))
+		List<SaleOutDTO> salesOUT = sales.stream().map(sale -> serviceFacade.convertToDTO(sale))
 				.collect(Collectors.toList());
 
 		return new ResponseEntity<List<SaleOutDTO>>(salesOUT, HttpStatus.OK);

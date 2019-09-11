@@ -27,14 +27,23 @@ public class Sale extends BaseObject {
 	@JoinColumn(name = "customer_id", nullable = false)
 	private Customer customer;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
 	private BigDecimal price;
 
-	@Column(nullable = false)
-	private BigDecimal discount;
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
+	private BigDecimal discountPercent;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
+	private BigDecimal discountAmount;
+
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
 	private BigDecimal discountedPrice;
+
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
+	private BigDecimal givenPoints;
+
+	@Column(nullable = false, columnDefinition = "DECIMAL(18,2)")
+	private BigDecimal usedPoints;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
 	@Column(nullable = false)
@@ -56,12 +65,28 @@ public class Sale extends BaseObject {
 		this.price = price;
 	}
 
-	public BigDecimal getDiscount() {
-		return discount;
+	public BigDecimal getGivenPoints() {
+		return givenPoints;
 	}
 
-	public void setDiscount(BigDecimal discount) {
-		this.discount = discount;
+	public void setGivenPoints(BigDecimal givenPoints) {
+		this.givenPoints = givenPoints;
+	}
+
+	public BigDecimal getUsedPoints() {
+		return usedPoints;
+	}
+
+	public void setUsedPoints(BigDecimal usedPoints) {
+		this.usedPoints = usedPoints;
+	}
+
+	public BigDecimal getDiscountPercent() {
+		return discountPercent;
+	}
+
+	public void setDiscountPercent(BigDecimal discount) {
+		this.discountPercent = discount;
 	}
 
 	public BigDecimal getDiscountedPrice() {
@@ -70,6 +95,14 @@ public class Sale extends BaseObject {
 
 	public void setDiscountedPrice(BigDecimal discountedPrice) {
 		this.discountedPrice = discountedPrice;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
 	}
 
 	public LocalDateTime getDate() {

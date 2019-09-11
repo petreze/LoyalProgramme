@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.CustomerPassingDTO;
 import com.frantishex.loyaltyprogramme.DTOs.MerchantDTO;
+import com.frantishex.loyaltyprogramme.DTOs.MerchantReportDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SaleOutDTO;
 import com.frantishex.loyaltyprogramme.DTOs.SalePassingDTO;
 import com.frantishex.loyaltyprogramme.models.Customer;
@@ -42,16 +43,28 @@ public class ServiceFacade {
 		return customerService.getById(id);
 	}
 
-	public List<Customer> getCustomersByMerchant(String name) {
-		return customerService.getCustomersByMerchant(name);
+	public List<Customer> getCustomersByMerchant(String name) throws SQLException {
+
+		if (merchantService.getByName(name) != null) {
+
+			return customerService.getCustomersByMerchant(name);
+		} else {
+			throw new SQLException("No such customer registered with the given merchant name!");
+		}
 	}
 
 	public List<Customer> getAllCustomers() {
 		return customerService.getAll();
 	}
 
-	public Customer getCustomerByName(String name) {
-		return customerService.getByName(name);
+	public Customer getCustomerByName(String name) throws SQLException {
+
+		if (customerService.getByName(name) != null) {
+
+			return customerService.getByName(name);
+		} else {
+			throw new SQLException("No such merchant registered with the given name!");
+		}
 	}
 
 	public void createMerchant(Merchant merchant) {
@@ -66,8 +79,24 @@ public class ServiceFacade {
 		return merchantService.getAll();
 	}
 
-	public Merchant getMerchantByName(String name) {
-		return merchantService.getByName(name);
+	public Merchant getMerchantByName(String name) throws SQLException {
+
+		if (merchantService.getByName(name) != null) {
+
+			return merchantService.getByName(name);
+		} else {
+			throw new SQLException("No such merchant registered with the given name!");
+		}
+	}
+
+	public MerchantReportDTO merchantReport(String name, String dateFrom, String dateTo) throws SQLException, ClassNotFoundException {
+
+		if (merchantService.getByName(name) != null) {
+
+			return merchantService.merchantReport2(name, dateFrom, dateTo);
+		} else {
+			throw new SQLException("No such merchant registered with the given name!");
+		}
 	}
 
 	public void createSale(Sale sale) {
@@ -78,12 +107,27 @@ public class ServiceFacade {
 		return saleService.getById(id);
 	}
 
-	public List<Sale> getSalesCheaperThan(BigDecimal price) {
-		return saleService.getCheaperThan(price);
+	public void recalculateClientPoints(Customer client, Sale sale) {
+		saleService.recalculateClientPoints(client, sale);
 	}
 
-	public List<Sale> getSalesByCustomer(String name) {
-		return saleService.getSalesByCustomer(name);
+	public List<Sale> getSalesCheaperThan(BigDecimal price) throws SQLException {
+
+		if (saleService.getSalesCheaperThan(price) == null) {
+			throw new SQLException("There aren't sales cheaper than the given price!");
+		} else {
+			return saleService.getSalesCheaperThan(price);
+		}
+	}
+
+	public List<Sale> getSalesByCustomer(String name) throws SQLException {
+
+		if (customerService.getByName(name) != null) {
+
+			return saleService.getSalesByCustomer(name);
+		} else {
+			throw new SQLException("No such customer registered with the given name!");
+		}
 	}
 
 	public List<Sale> getAllSales() {
@@ -101,7 +145,7 @@ public class ServiceFacade {
 
 			return customer;
 		} else {
-			throw new SQLException("No such merchant registered with that name!");
+			throw new SQLException("No such merchant registered with the given name!");
 		}
 	}
 
@@ -111,23 +155,24 @@ public class ServiceFacade {
 
 			Sale sale = modelMapper.map(saleCommand, Sale.class);
 			sale.setCustomer(customerService.getByName(saleCommand.getCustomer()));
-			sale.setDiscount(customerService.getByName(saleCommand.getCustomer()).getMerchant().getDiscount());
+			sale.setDiscountPercent(customerService.getByName(saleCommand.getCustomer()).getMerchant().getDiscount());
 			sale.setDiscountedPrice(saleService.settingDiscountedPrice(sale));
-
+			sale.setDiscountAmount(saleCommand.getPrice().subtract(sale.getDiscountedPrice()));
+			sale.setGivenPoints(sale.getDiscountedPrice().multiply(new BigDecimal(5).divide(new BigDecimal(100))));
 			return sale;
 		} else {
 
-			throw new SQLException("No such customer registered with that name!");
+			throw new SQLException("No such customer registered with the given name!");
 		}
 
 	}
 
-	public CustomerOutDTO convertToDAO(Customer customer) {
+	public CustomerOutDTO convertToDTO(Customer customer) {
 
 		return modelMapper.map(customer, CustomerOutDTO.class);
 	}
 
-	public SaleOutDTO convertToDAO(Sale sale) {
+	public SaleOutDTO convertToDTO(Sale sale) {
 
 		SaleOutDTO saleDAO = modelMapper.map(sale, SaleOutDTO.class);
 		saleDAO.setCustomerName(sale.getCustomer().getName());
